@@ -11,7 +11,7 @@
       lib = nixpkgs.lib;
     in rec
     {
-      nixosConfigurations.rpi4 = lib.nixosSystem {
+      nixosConfigurations.solaraspi = lib.nixosSystem {
         system = "aarch64-linux";
 
         modules = [
@@ -21,10 +21,13 @@
               "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
               ./configuration.nix
             ];
+
+            boot.kernelParams = lib.mkOverride 0 [ "console=ttyS1,115200" "console=tty1" ]; # Enable serial console on pins 8,10
+            nix.extraOptions = ''experimental-features = nix-command flakes'';
           }
         ];
     };
 
-    solaraspi = nixosConfigurations.rpi4.config.system.build.sdImage;
+    solaraspi-image = nixosConfigurations.solaraspi.config.system.build.sdImage;
   };
 }
