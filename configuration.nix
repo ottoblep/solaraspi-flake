@@ -3,6 +3,11 @@
 {
   imports = [ ];
 
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:ottoblep/solaraspi-flake"
+  }
+
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
