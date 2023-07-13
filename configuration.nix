@@ -5,8 +5,8 @@
 
   system.autoUpgrade = {
     enable = true;
-    flake = "github:ottoblep/solaraspi-flake"
-  }
+    flake = "github:ottoblep/solaraspi-flake";
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
@@ -18,6 +18,10 @@
       enable = true;
       networks = {
       };
+    };
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 1883 ]; # ssh and avahi are opened automatically
     };
   };
 
@@ -31,6 +35,17 @@
       domain = true;
       addresses = true;
     };
+  };
+
+  services.mosquitto = {
+    enable = true;
+    listeners = [
+      {
+        acl = [ "pattern readwrite #" ];
+        omitPasswordAuth = true;
+        settings.allow_anonymous = true;
+      }
+    ];
   };
 
   users = let
