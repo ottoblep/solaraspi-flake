@@ -66,6 +66,22 @@
   };
   # Request from script psql -d homedata -c "SELECT * FROM timesheet;"
 
+  # MQTT to SQL Service
+  systemd.services = {
+    mqtt-sql-pipe = {
+      enable = true;
+      # For every new mqtt message enter the current timestamp into sql
+      script = 
+      "/run/current-system/sw/bin/mosquitto_sub -h 127.0.0.1 -t home/lightswitched |
+      xargs -n 1 /run/current-system/sw/bin/psql -d homedata -U sevi -c 'INSERT INTO timesheet VALUES (CURRENT_TIMESTAMP)'";
+      serviceConfig = {
+        User = "sevi";
+        Restart = "always";
+      };
+      wantedBy = ["multi-user.target"];
+    };
+  };
+
   users = let
     sevi-key = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpZOwdinQQ8yxfbfe0fASggxkvOdC3dETtxcP2AGbY1DxdVX8EijGSvORN+FIf+JZlS9bvg48UWZOLYHVbWyVnv9M5bPgK8OKgjD/HT5oiIXtCJKtFveroZyc8L9cOadZRBGYoOQrRfMKAnUC1wp1aw5gSAIC5+JPrb+OjKoRwXYwRv+mtXQw+E6DO8nAsVZ8B7u+NyHwYF7uSR+Gl8hbaBriiGlSe0gqIxGNq7CafYZ9uR2wbVZRX8k+mga7gHogY1KaCUmagNG3jDd/d/NIobzO0FJBbPg5J01dGfSOg0EljAlxywLxCERwbtNakHAgsq9qenBgc4wIgiKz/LqmV Sevis SSH Key" ];
   in {
@@ -97,6 +113,7 @@
     file
     zoxide
     tio
+    mosquitto
   ];
 
   programs.zsh = {
