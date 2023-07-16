@@ -72,7 +72,7 @@
       enable = true;
       # For every new mqtt message enter the current timestamp into sql
       script = 
-      "/run/current-system/sw/bin/mosquitto_sub -h 127.0.0.1 -t home/lightswitched |
+      "/run/current-system/sw/bin/mosquitto_sub -h 127.0.0.1 -q 2 -t home/lightswitched |
       xargs -n 1 /run/current-system/sw/bin/psql -d homedata -U sevi -c 'INSERT INTO timesheet VALUES (CURRENT_TIMESTAMP)'";
       serviceConfig = {
         User = "sevi";
