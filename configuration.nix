@@ -6,17 +6,19 @@
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
-  users = {
-      users = {
-        root = {
-          password = "TestPW";
-        };
-      };
-      mutableUsers = false;
+  boot.loader.grub.enable = false;
+  boot.loader.generic-extlinux-compatible.enable = true;
+  boot.consoleLogLevel = lib.mkDefault 7;
+
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+    };
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  users.users.root.password = "TestPW";
+
   environment.systemPackages = with pkgs;[
   ];
 

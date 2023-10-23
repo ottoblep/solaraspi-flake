@@ -11,8 +11,6 @@
     lib = nixpkgs.lib;
   in rec
   {
-    # pkgsCross.aarch64-multiplatform
-    # nix build .#nixosConfigurations.solaraspi.config.system.build.toplevel 
     nixosConfigurations.solaraspi = lib.nixosSystem {
       system = "aarch64-linux";
 
@@ -20,7 +18,6 @@
         {
           imports = [
             ./configuration.nix
-            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
           ];
 
           boot.kernelParams = lib.mkOverride 0 [ "console=ttyS1,115200" "console=tty1" ]; # Enable serial console on pins 8,10
@@ -28,5 +25,7 @@
         }
       ];
     };
+
+    rootfs = nixosConfigurations.solaraspi.config.system.build.toplevel;
   };
 }
