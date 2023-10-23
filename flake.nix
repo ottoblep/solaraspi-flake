@@ -17,6 +17,7 @@
       modules = [
         {
           imports = [
+            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
             ./configuration.nix
           ];
 
@@ -27,6 +28,7 @@
     };
 
     rootfs = nixosConfigurations.solaraspi.config.system.build.toplevel;
+    image = nixosConfigurations.solaraspi.config.system.build.sdImage;
     uboot = pkgs.pkgsCross.aarch64-multiplatform.ubootRaspberryPi3_64bit;
   };
 }
