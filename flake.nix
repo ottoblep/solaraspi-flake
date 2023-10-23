@@ -27,5 +27,6 @@
     };
 
     rootfs = nixosConfigurations.solaraspi.config.system.build.toplevel;
+    uboot = pkgs.pkgsCross.aarch64-multiplatform.ubootRaspberryPi3_64bit;
   };
 }
