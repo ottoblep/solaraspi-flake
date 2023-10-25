@@ -200,10 +200,11 @@ in
         # Gap in front of the first partition, in MiB
         gap=${toString config.sdImage.firmwarePartitionOffset}
 
-        # Create the image file sized to fit /boot/firmware and /, plus slack for the gap.
+        # Create the image file sized to fit /boot/firmware and / two times, plus slack for the gap.
         rootSizeBlocks=$(du -B 512 --apparent-size $root_fs | awk '{ print $1 }')
         firmwareSizeBlocks=$((${toString config.sdImage.firmwareSize} * 1024 * 1024 / 512))
-        imageSize=$((rootSizeBlocks * 512 + firmwareSizeBlocks * 512 + gap * 1024 * 1024))
+        # TODO make this as small as possible
+        imageSize=$((3 * rootSizeBlocks * 512 + firmwareSizeBlocks * 512 + gap * 1024 * 1024))
         truncate -s $imageSize $img
 
         # type=b is 'W95 FAT32', type=83 is 'Linux'.
@@ -214,8 +215,13 @@ in
             label-id: ${config.sdImage.firmwarePartitionID}
 
             start=''${gap}M, size=$firmwareSizeBlocks, type=b
-            start=$((gap + ${toString config.sdImage.firmwareSize}))M, type=83, bootable
+            start=$((gap + ${toString config.sdImage.firmwareSize}))M, size=$rootSizeBlocks, type=83, bootable
+            size=$rootSizeBlocks, type=83, bootable
         EOF
+
+        # Copy the second rootfs into the SD image
+        eval $(partx $img -o START,SECTORS --nr 3 --pairs)
+        dd conv=notrunc if=$root_fs of=$img seek=$START count=$SECTORS
 
         # Copy the rootfs into the SD image
         eval $(partx $img -o START,SECTORS --nr 2 --pairs)
