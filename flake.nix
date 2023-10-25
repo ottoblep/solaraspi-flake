@@ -2,7 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
   };
-  outputs = { nixpkgs, ... }:
+  outputs = { nixpkgs, ... }@inputs:
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs {
@@ -13,11 +13,12 @@
   {
     nixosConfigurations.solaraspi = lib.nixosSystem {
       system = "aarch64-linux";
+      specialArgs = {inherit inputs;};
 
       modules = [
         {
           imports = [
-            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+            ./modules/sd-image-aarch64-rauc
             ./configuration.nix
           ];
 
