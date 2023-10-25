@@ -21,6 +21,11 @@
             ./modules/sd-image-aarch64-rauc
             ./configuration.nix
           ];
+          sdImage = {
+            imageBaseName = "nixos-raspi-rauc-sd-image";
+            compressImage = false;
+            expandOnBoot = false;
+          };
 
           boot.kernelParams = lib.mkOverride 0 [ "console=ttyS1,115200" "console=tty1" ]; # Enable serial console on pins 8,10
           nix.extraOptions = ''experimental-features = nix-command flakes'';
