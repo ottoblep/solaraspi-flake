@@ -204,7 +204,7 @@ in
         rootSizeBlocks=$(du -B 512 --apparent-size $root_fs | awk '{ print $1 }')
         firmwareSizeBlocks=$((${toString config.sdImage.firmwareSize} * 1024 * 1024 / 512))
         # TODO make this as small as possible
-        imageSize=$((3 * rootSizeBlocks * 512 + firmwareSizeBlocks * 512 + gap * 1024 * 1024))
+        imageSize=$((rootSizeBlocks * 2 * 512 + firmwareSizeBlocks * 512 + gap * 1024 * 1024 * 2))
         truncate -s $imageSize $img
 
         # type=b is 'W95 FAT32', type=83 is 'Linux'.
