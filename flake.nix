@@ -4,10 +4,6 @@
   };
   outputs = { nixpkgs, ... }:
   let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-    };
     lib = nixpkgs.lib;
   in rec
   {
